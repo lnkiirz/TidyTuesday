@@ -185,4 +185,22 @@ summary_interactive <-
 print(summary_graphs)
 print(summary_interactive)
 
+# linear regressions breaking down trends
+all_years_prices <-
+  lm(
+  avg_price ~ Year,
+  grouped_summary
+)
+
+summary(all_years_prices)
+
+# according to usinflationcalculator.com gas moves with inflation - 3.38 today would be about 1.37 in 1990, 
+# very close to the actual 1.30, ~5% difference in predicted vs actual
+inflation <-
+  tibble(
+    price_2025 = 3.38,
+    price_1990_expected = 1.37,
+    price_1990_actal = 1.30
+  )
+
 # END :)
