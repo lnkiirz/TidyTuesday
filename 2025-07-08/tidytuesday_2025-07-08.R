@@ -27,6 +27,9 @@ full_data <-
 xx_vs_xy <-
   full_data |> 
   filter(!is.na(y_chromosome)) |> 
+  mutate(
+    y_chromosome = factor(y_chromosome, labels = c("Female", "Male"))
+  ) |> 
   group_by(y_chromosome) |> 
   summarize(
     Mean_rank = mean(rank)
@@ -43,6 +46,7 @@ tidy_mdl <-
 effect_size <-
   cohens_d(rank ~ y_chromosome, data = full_data)
 
+# summarize stat results and effect
 summary_df <-
   tibble(
     "Mean Difference" = tidy_mdl$estimate,
@@ -55,6 +59,7 @@ summary_df <-
 
 print(summary_df)
 
+# column chart to compare results
 comparison_graph <-
   ggplot(
   data = xx_vs_xy,
@@ -62,9 +67,9 @@ comparison_graph <-
     x = factor(y_chromosome),
     y = Mean_rank)
 ) +
-  geom_col(aes(fill = y_chromosome, legend = "one")) +
+  geom_col(aes(fill = y_chromosome)) +
   labs(
-    title = "Men and women don't score significantly differnt on color identification"
+    title = "Men and women don't score significantly different on color identification"
   ) +
   xlab("Biological Sex") +
   ylab("Average color rank") +
@@ -72,5 +77,8 @@ comparison_graph <-
     legend.position = "none"
   )
 
-interactive_graph <-
+# make graph interactive
+  interactive_graph <-
   ggplotly(comparison_graph)
+
+print(interactive_graph)
