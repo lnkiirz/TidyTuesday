@@ -1,6 +1,7 @@
 library(tidyverse)
 library(broom)
 library(effectsize)
+library(plotly)
 
 # load data
 answers <- 
@@ -52,4 +53,24 @@ summary_df <-
     "Effect size (Cohen's d)" = effect_size$Cohens_d
   )
 
-summary_df
+print(summary_df)
+
+comparison_graph <-
+  ggplot(
+  data = xx_vs_xy,
+  aes(
+    x = factor(y_chromosome),
+    y = Mean_rank)
+) +
+  geom_col(aes(fill = y_chromosome, legend = "one")) +
+  labs(
+    title = "Men and women don't score significantly differnt on color identification"
+  ) +
+  xlab("Biological Sex") +
+  ylab("Average color rank") +
+  theme(
+    legend.position = "none"
+  )
+
+interactive_graph <-
+  ggplotly(comparison_graph)
