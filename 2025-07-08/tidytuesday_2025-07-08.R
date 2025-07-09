@@ -1,6 +1,6 @@
 library(tidyverse)
-library(gtsummary)
 library(broom)
+library(effectsize)
 
 # load data
 answers <- 
@@ -29,10 +29,15 @@ xx_vs_xy <-
   group_by(y_chromosome) |> 
   summarize(
     Mean_rank = mean(rank)
-  ) |> 
-  ungroup()
+  )
 
 mdl <-
   t.test(rank ~ y_chromosome, data = full_data)
-tidy(mdl)
 
+# tidy output
+tidy_mdl <-
+  tidy(mdl)
+
+# effect size - extremely small at .02
+effect_size <-
+  cohens_d(rank ~ y_chromosome, data = full_data)
