@@ -32,7 +32,10 @@ xx_vs_xy <-
   ) |> 
   group_by(y_chromosome) |> 
   summarize(
-    Mean_rank = mean(rank)
+    Mean_rank = mean(rank),
+    SD = sd(rank),
+    SD_above_mean = Mean_rank + SD,
+    SD_below_mean = Mean_rank - SD
   )
 
 mdl <-
@@ -65,9 +68,11 @@ comparison_graph <-
   data = xx_vs_xy,
   aes(
     x = factor(y_chromosome),
-    y = Mean_rank)
+    y = Mean_rank,
+  fill = y_chromosome)
 ) +
-  geom_col(aes(fill = y_chromosome)) +
+  coord_cartesian(ylim = c(2.35, 2.52)) +
+  geom_col() +
   labs(
     title = "Men and women don't score significantly different on color identification"
   ) +
