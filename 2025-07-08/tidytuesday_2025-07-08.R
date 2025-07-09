@@ -41,3 +41,15 @@ tidy_mdl <-
 # effect size - extremely small at .02
 effect_size <-
   cohens_d(rank ~ y_chromosome, data = full_data)
+
+summary_df <-
+  tibble(
+    "Mean Difference" = tidy_mdl$estimate,
+    "Women's Mean" = tidy_mdl$estimate1,
+    "Men's Mean" = tidy_mdl$estimate2,
+    "T value" = tidy_mdl$statistic,
+    "p value" = tidy_mdl$p.value,
+    "Effect size (Cohen's d)" = effect_size$Cohens_d
+  )
+
+summary_df
