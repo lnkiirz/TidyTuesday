@@ -1,5 +1,6 @@
 library(tidyverse)
 library(broom)
+library(car)
 library(effectsize)
 library(plotly)
 
@@ -37,6 +38,9 @@ xx_vs_xy <-
     SD_above_mean = Mean_rank + SD,
     SD_below_mean = Mean_rank - SD
   )
+
+# checking equal variances - significant test, but unlikely to be an issue with this sample size
+leveneTest(rank ~ factor(y_chromosome), data = full_data)
 
 mdl <-
   t.test(rank ~ y_chromosome, data = full_data)
@@ -104,3 +108,11 @@ comparison_graph <-
   ggplotly(comparison_graph)
 
 print(interactive_graph)
+
+anova_gender_colorblind <-
+  aov(rank ~ factor(y_chromosome) * factor(colorblind), data = full_data)
+
+summary(anova_gender_colorblind)
+
+# all combinations significant except one
+TukeyHSD(anova_gender_colorblind)
