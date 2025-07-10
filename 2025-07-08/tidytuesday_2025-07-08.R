@@ -23,14 +23,14 @@ users <- read_csv(
 full_data <-
   answers |>
   left_join(color_ranks, by = "rank", suffix = c("_answers", "_ranks")) |> 
-  left_join(users, by = "user_id")
+  left_join(users, by = "user_id") |> 
+  mutate(
+    y_chromosome = factor(y_chromosome, labels = c("Female", "Male"))
+  )
 
 xx_vs_xy <-
   full_data |> 
   filter(!is.na(y_chromosome)) |> 
-  mutate(
-    y_chromosome = factor(y_chromosome, labels = c("Female", "Male"))
-  ) |> 
   group_by(y_chromosome) |> 
   summarize(
     Mean_rank = mean(rank),
@@ -115,4 +115,13 @@ anova_gender_colorblind <-
 summary(anova_gender_colorblind)
 
 # all combinations significant except one
-TukeyHSD(anova_gender_colorblind)
+Tukey_comps <-
+  TukeyHSD(anova_gender_colorblind)
+
+print(Tukey_comps)
+
+# plot to compare group differences
+Tukey_plot <-
+  plot(Tukey_comps)
+
+print(Tukey_plot)
