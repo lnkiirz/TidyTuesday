@@ -54,7 +54,11 @@ summary_df <-
   tibble(
     "Mean Difference" = tidy_mdl$estimate,
     "Women's Mean" = tidy_mdl$estimate1,
+    "Women's CI low" = tidy_mdl$estimate1 - tidy_mdl$conf.low,
+    "Women's CI high" = tidy_mdl$estimate1 + tidy_mdl$conf.high,
     "Men's Mean" = tidy_mdl$estimate2,
+    "Men's CI low" = tidy_mdl$estimate2 - tidy_mdl$conf.low,
+    "Men's CI high" = tidy_mdl$estimate2 + tidy_mdl$conf.high,
     "T value" = tidy_mdl$statistic,
     "p value" = tidy_mdl$p.value,
     "Effect size (Cohen's d)" = effect_size$Cohens_d
@@ -71,8 +75,20 @@ comparison_graph <-
     y = Mean_rank,
   fill = y_chromosome)
 ) +
-  coord_cartesian(ylim = c(2.35, 2.52)) +
+  coord_cartesian(ylim = c(2.35, 2.55)) +
   geom_col() +
+  geom_errorbar(
+    data = xx_vs_xy |> filter(y_chromosome == "Female"), 
+    ymin = summary_df$`Women's CI low`, 
+    ymax = summary_df$`Women's CI high`,
+    width = .35
+  ) +
+  geom_errorbar(
+    data = xx_vs_xy |> filter(y_chromosome == "Male"), 
+    ymin = summary_df$`Men's CI low`, 
+    ymax = summary_df$`Men's CI high`,
+    width = .35
+  ) +
   labs(
     title = "Men and women don't score significantly different on color identification"
   ) +
@@ -81,6 +97,7 @@ comparison_graph <-
   theme(
     legend.position = "none"
   )
+comparison_graph
 
 # make graph interactive
   interactive_graph <-
