@@ -94,10 +94,10 @@ comparison_graph <-
   ) +
   xlab("Biological Sex") +
   ylab("Average color rank") +
+  theme_minimal() +
   theme(
     legend.position = "none"
   )
-comparison_graph
 
 # make graph interactive
   interactive_graph <-
