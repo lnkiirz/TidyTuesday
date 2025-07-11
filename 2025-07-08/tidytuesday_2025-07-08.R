@@ -172,7 +172,8 @@ final_results <-
     "Gender and colorblindness ANOVA" = anova_details,
     "ANOVA summary" = anova_summary,
     "Tukey post-hoc tests" = Tukey_comps,
-    "Tukey means plot" = Tukey_plot
+    "Tukey means plot" = Tukey_plot # some intermeidate graphs print, these can be ignored since they lack all groups
+                                    # - final plot has 6 lines representing all groups
   )
 
 print(final_results)
