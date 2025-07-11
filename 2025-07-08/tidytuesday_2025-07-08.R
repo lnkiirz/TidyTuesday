@@ -25,22 +25,49 @@ full_data <-
   left_join(color_ranks, by = "rank", suffix = c("_answers", "_ranks")) |> 
   left_join(users, by = "user_id") |> 
   mutate(
-    y_chromosome = factor(y_chromosome, labels = c("Female", "Male"))
-  )
+    y_chromosome = factor(y_chromosome, labels = c("Female", "Male")),
+    colorblind = factor(colorblind, labels = c("No", "Yes"))
+  ) |> 
+  group_by(user_id) |> 
+  mutate(
+    user_rank = mean(rank, na.rm = TRUE),
+    user_accuracy = 1 / user_rank
+  ) |> 
+  ungroup()
 
 xx_vs_xy <-
   full_data |> 
-  filter(!is.na(y_chromosome)) |> 
+  filter(!is.na(y_chromosome), !is.na(colorblind)) |> 
   group_by(y_chromosome) |> 
   summarize(
-    Mean_rank = mean(rank),
+    mean_rank = mean(user_rank, na.rm = TRUE),
+    mean_accuracy = 1 / mean_rank,
     SD = sd(rank),
-    SD_above_mean = Mean_rank + SD,
-    SD_below_mean = Mean_rank - SD
+    SD_above_mean = mean_rank + SD,
+    SD_below_mean = mean_rank - SD
   )
 
-# checking equal variances - significant test, but unlikely to be an issue with this sample size
+# initial spot checking
+# using rank
+ggplot(
+  data = full_data |> filter(!is.na(y_chromosome), !is.na(colorblind)),
+  aes(x = user_rank, fill = y_chromosome)
+) +
+  geom_density() +
+  facet_wrap(~ y_chromosome)
+
+# using accuracy
+ggplot(
+  data = full_data |> filter(!is.na(y_chromosome), !is.na(colorblind)),
+  aes(x = user_accuracy, fill = y_chromosome)
+) +
+  geom_density() +
+  facet_wrap(~ y_chromosome)
+# some outliers in both, unlikely to be an issue given sample size
+
+# checking equal variances
 leveneTest(rank ~ factor(y_chromosome), data = full_data)
+# significant test, but unlikely to be an issue with this sample size
 
 mdl <-
   t.test(rank ~ y_chromosome, data = full_data)
@@ -54,7 +81,7 @@ effect_size <-
   cohens_d(rank ~ y_chromosome, data = full_data)
 
 # summarize stat results and effect
-summary_df <-
+summary_ttest <-
   tibble(
     "Mean Difference" = tidy_mdl$estimate,
     "Women's Mean" = tidy_mdl$estimate1,
@@ -68,7 +95,7 @@ summary_df <-
     "Effect size (Cohen's d)" = effect_size$Cohens_d
   )
 
-print(summary_df)
+print(summary_ttest)
 
 # column chart to compare results
 comparison_graph <-
@@ -76,7 +103,7 @@ comparison_graph <-
   data = xx_vs_xy,
   aes(
     x = factor(y_chromosome),
-    y = Mean_rank,
+    y = mean_rank,
   fill = y_chromosome)
 ) +
   coord_cartesian(ylim = c(2.35, 2.55)) +
@@ -110,9 +137,13 @@ comparison_graph <-
 print(interactive_graph)
 
 anova_gender_colorblind <-
-  aov(rank ~ factor(y_chromosome) * factor(colorblind), data = full_data)
+  aov(rank ~ y_chromosome * colorblind, data = full_data)
 
 summary(anova_gender_colorblind)
+
+# anova effect size - once again minimal
+anova_effect <-
+  eta_squared(anova_gender_colorblind)
 
 # all combinations significant except one
 Tukey_comps <-
