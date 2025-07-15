@@ -18,10 +18,20 @@ funding_non_adjusted <-
     names_to = "Funding type",
     values_to = "GBP"
   ) |>
-  distinct() |> 
+  mutate(
+    "Funding label" = case_match(
+      `Funding type`,
+      "nominal_gbp_millions" ~ "Total funding",
+      "gia_gbp_millions" ~ "Grant in aid",
+      "voluntary_gbp_millions" ~ "Voluntary and donations",
+      "investment_gbp_millions" ~ "Returns on investments",
+      "services_gbp_millions" ~ "Service delivery",
+      "other_gbp_millions" ~ "Other"
+    )
+  ) |> 
   group_by(
     year,
-    `Funding type`
+    `Funding label`
   ) |> 
   summarize(
     "Total GBP" = sum(GBP),
@@ -31,10 +41,9 @@ funding_non_adjusted <-
 overall_graph <-
   ggplot(
     data = funding_non_adjusted,
-    aes(x = year, y = `Total GBP`, color = `Funding type`, label = `Funding type`)
+    aes(x = year, y = `Total GBP`, color = `Funding label`, label = `Funding label`)
   ) +
-  geom_line() +
-  geom_textline(linewidth = 2) +
+  geom_textline(linewidth = 2, size = 5, hjust = "auto") +
   theme_minimal() +
   theme(
     legend.position = "none"
