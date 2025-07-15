@@ -43,7 +43,7 @@ overall_graph <-
     data = funding_non_adjusted,
     aes(x = year, y = `Total GBP`, color = `Funding label`, label = `Funding label`)
   ) +
-  geom_textline(linewidth = 2, size = 5, hjust = "auto") +
+  geom_textline(linewidth = 2, size = 5, vjust = -.5, hjust = "auto") +
   theme_minimal() +
   theme(
     legend.position = "none"
