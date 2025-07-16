@@ -264,3 +264,15 @@ ggsave(
   height = 800,
   units = "px"
 )
+
+final_results <- 
+  list(
+    nonadjusted_graph,
+    adjusted_graph,
+    adjusted_vs_non_graph,
+    gia_graph,
+    percentage_of_y2000_graph,
+    percentage_and_gia_graph
+  )
+
+print(final_results)
