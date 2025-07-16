@@ -26,26 +26,32 @@ funding_non_adjusted <-
       "voluntary_gbp_millions" ~ "Voluntary and donations",
       "investment_gbp_millions" ~ "Returns on investments",
       "services_gbp_millions" ~ "Service delivery",
-      "other_gbp_millions" ~ "Other"
+      "other_gbp_millions" ~ "Other"),
+    funding_group = case_match(
+      `Funding label`,
+      c("Total funding", "Grant in aid") ~ "Group 1",
+      .default = "Group 2"
     )
   ) |> 
   group_by(
     year,
-    `Funding label`
+    `Funding label`,
+    funding_group
   ) |> 
   summarize(
     "Total GBP" = sum(GBP),
     .groups = "drop"
   )
 
-overall_graph <-
+nonadjusted_graph <- # saved as 1600x1200 when finished
   ggplot(
     data = funding_non_adjusted,
     aes(x = year, y = `Total GBP`, color = `Funding label`, label = `Funding label`)
   ) +
-  geom_textline(linewidth = 2, size = 5, vjust = -.5, hjust = "auto") +
+  geom_textpath(linewidth = 2, size = 8, vjust = -1.5, hjust = "auto", text_smoothing = 65) +
+  facet_wrap(~ funding_group) +
   theme_minimal() +
   theme(
     legend.position = "none"
   )
-overall_graph
+nonadjusted_graph
