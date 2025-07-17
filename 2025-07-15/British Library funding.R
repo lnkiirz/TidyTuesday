@@ -166,7 +166,7 @@ adjusted_vs_non_graph <-
   geom_smooth(se = FALSE) +
   labs(
     title = "Comparing Opposing Trends, Adjusted vs. Not Adjusted Total and GIA",
-    subtitle = "Without inflation adjustment, an increase is actually a dicrease."
+    subtitle = "Without inflation adjustment, an increase is actually a decrease."
   )
 
 ggsave(
