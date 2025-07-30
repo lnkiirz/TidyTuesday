@@ -161,4 +161,15 @@ top_shows_2023 <-
 patch <-
   top_movies_2023 + top_movies_2024 + top_movies_2025 + 
   top_shows_2023 + top_shows_2024 + top_shows_2025 +
-  plot_annotation(tag_levels = list(c("2023", "2024", "2025")))
+  plot_annotation(
+    tag_levels = list(c("2023", "2024", "2025")),
+    title = "What did people watch on Netflix?",
+    subtitle = "2023-2025, movies in blue, shows in red"
+  )
+
+ggsave(
+  "Netflix Movies and Shows 2023-2025.jpg",
+  plot = patch,
+  height = 5,
+  width = 15
+)
