@@ -173,3 +173,21 @@ ggsave(
   height = 5,
   width = 15
 )
+
+views_by_year <-
+  all_data |> 
+  group_by(Year = year(release_date)) |> 
+  summarize(
+    total_views_millions = sum(views) / 1000000
+  )
+
+ggplot(
+  data = views_by_year,
+  aes(x = Year, y = total_views_millions, color = "seagreen4")
+) +
+  scale_color_manual(values = "seagreen4") + 
+  geom_line() +
+  theme(
+    legend.position = "none"
+  ) +
+  ylab("Views (in millions)")
