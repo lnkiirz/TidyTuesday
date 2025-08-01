@@ -181,7 +181,8 @@ views_by_year <-
     total_views_millions = sum(views) / 1000000
   )
 
-ggplot(
+netflix_growth <-
+  ggplot(
   data = views_by_year,
   aes(x = Year, y = total_views_millions, color = "seagreen4")
 ) +
@@ -191,3 +192,14 @@ ggplot(
     legend.position = "none"
   ) +
   ylab("Views (in millions)")
+
+top_10_by_year <-
+  all_data |> 
+  group_by(
+    Year = year(release_date),
+    title,
+    Type
+  ) |> 
+  summarize(
+    total_views = sum(views, na.rm = TRUE)
+  )
