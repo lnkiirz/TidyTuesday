@@ -167,12 +167,12 @@ patch <-
     subtitle = "2023-2025, movies in blue, shows in red"
   )
 
-# ggsave(
-#   "Netflix Movies and Shows 2023-2025.jpg",
-#   plot = patch,
-#   height = 5,
-#   width = 15
-# )
+ggsave(
+  "Netflix Movies and Shows 2023-2025.jpg",
+  plot = patch,
+  height = 5,
+  width = 15
+)
 
 views_by_year <-
   all_data |> 
@@ -216,13 +216,57 @@ netflix_growth_relative_pct_2010 <-
     subtitle = "Total percent difference since 2010 views - 250% increase in 2024"
   )
 
+ggsave(
+  "Netflix Views Growth 2010-2025.jpg",
+  plot = netflix_growth,
+  height = 5,
+  width = 10
+)
+
+ggsave(
+  "Netflix Growth relative to 2010.jpg",
+  plot = netflix_growth_relative_pct_2010,
+  height = 5,
+  width = 10
+)
+
 top_5_shows_all_time <-
   all_data |> 
   filter(
     Type == "Show"
   ) |> 
   group_by(
+    title,
+    Type
+  ) |> 
+  summarize(
+    total_views_millions = sum(views) / 1000000
+  ) |> 
+  arrange(desc(total_views_millions)) |> 
+  head(5)
+
+top_5_shows_hours <-
+  all_data |> 
+  filter(
+    Type == "Show"
+  ) |> 
+  group_by(
     title
+  ) |> 
+  summarize(
+    total_hours_millions = sum(hours_viewed) / 1000000
+  ) |> 
+  arrange(desc(total_hours_millions)) |> 
+  head(5)
+
+top_5_movies_all_time <-
+  all_data |> 
+  filter(
+    Type == "Movie"
+  ) |> 
+  group_by(
+    title,
+    Type
   ) |> 
   summarize(
     total_views_millions = sum(views) / 1000000
