@@ -1,0 +1,26 @@
+---
+title: "Income inequality"
+author: "Lyubomir N. Kolev"
+date: "2025-08-06"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Income Inequality - Tidy Tuesday Week 31
+
+```{r libraries}
+library(tidyverse)
+```
+
+```{r import_data}
+income_inequality_processed <- 
+  read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-08-05/income_inequality_processed.csv'
+  )
+
+income_inequality_raw <- 
+  read_csv('https://raw.githubusercontent.com/rfordatascience/tidytuesday/main/data/2025/2025-08-05/income_inequality_raw.csv'
+  )
+```
