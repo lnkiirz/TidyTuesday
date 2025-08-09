@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This week we're exploring Income Inequality Before and After Taxes, as processed and visualized by Joe Hasell at Our World in Data: ["Income inequality before and after taxes: how much do countries redistribute income?"](https://ourworldindata.org/income-inequality-before-and-after-taxes)
 
-All data was processed by [Our World in Data]]([https://ourworldindata.org](https://ourworldindata.org/)), using these sources:
+All data was processed by \[Our World in Data\]\]([https://ourworldindata.org](https://ourworldindata.org/)), using these sources:
 
 -   [Luxembourg Income Study (2025)](https://www.lisdatacenter.org/our-data/lis-database/)
 
@@ -45,6 +45,10 @@ Thank you to [Jon Harmon, Data Science Learning Community](https://github.com/jo
 
 ```{r libraries}
 library(tidyverse)
+library(readxl)
+library(tmap)
+library(sf)
+library(rnaturalearth)
 ```
 
 ```{r}
@@ -64,12 +68,32 @@ income_inequality_raw <-
 
 ```{r}
 EU_countries <-
-  read.csv("Europe Country List.csv")
+  read_excel("Country List by Continent.xlsx", sheet = 1)
 ```
 
 ```{r}
 NA_countries <-
-  read.csv("NA Country List.csv")
+  read_excel("Country List by Continent.xlsx", sheet = 2)
+```
+
+```{r}
+Asia_countries <-
+  read_excel("Country List by Continent.xlsx", sheet = 3)
+```
+
+```{r}
+Africa_countries <-
+  read_excel("Country List by Continent.xlsx", sheet = 4)
+```
+
+```{r}
+SA_countries <-
+  read_excel("Country List by Continent.xlsx", sheet = 5)
+```
+
+```{r}
+Oceania_countries <-
+  read_excel("Country List by Continent.xlsx", sheet = 6)
 ```
 
 ```{r join_data}
@@ -113,14 +137,14 @@ ten_best_market <-
 ```
 
 ```{r mi}
-ten_worst_mi <-
+ten_worst_mi <- # pre-tax
   all_data |> 
   filter(
     !is.na(gini_mi_eq)
   ) |> 
   slice_max(gini_mi_eq, n = 10)
 
-ten_best_mi <-
+ten_best_mi <- # pre-tax
   all_data |> 
   filter(
     !is.na(gini_mi_eq)
@@ -129,14 +153,14 @@ ten_best_mi <-
 ```
 
 ```{r dhi}
-ten_worst_dhi <-
+ten_worst_dhi <- # post-tax
   all_data |> 
   filter(
     !is.na(gini_dhi_eq)
   ) |> 
   slice_max(gini_dhi_eq, n = 10)
 
-ten_best_dhi <-
+ten_best_dhi <- # post-tax
   all_data |> 
   filter(
     !is.na(gini_dhi_eq)
@@ -144,26 +168,10 @@ ten_best_dhi <-
   slice_min(gini_dhi_eq, n = 10)
 ```
 
-```{r europe_vs_NorthAmerica}
-eu_vs_na <-
-  all_data |> 
-  filter(
-    owid_region %in% c("Europe", "North America") # barely returns anything
-  )
-
-eu_vs_na <-
-  all_data |> 
-  filter(
-    Entity %in% c(EU_countries$Country.Name, NA_countries$Country),
-    !is.na(gini_mi_eq),
-    !is.na(gini_dhi_eq)
-  )
-```
-
 ```{r}
-ggplot(
-  data = eu_vs_na |> filter(Entity == "Bulgaria"),
-  aes(x = Year, y = gini_dhi_eq)
-) +
-  geom_line()
+europe <-
+    ne_countries(scale = "medium", continent = "Europe", returnclass = "sf")
+
+tm_shape(europe) +
+    tm_fill()
 ```
