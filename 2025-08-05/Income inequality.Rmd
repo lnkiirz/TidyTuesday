@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 
 This week we're exploring Income Inequality Before and After Taxes, as processed and visualized by Joe Hasell at Our World in Data: ["Income inequality before and after taxes: how much do countries redistribute income?"](https://ourworldindata.org/income-inequality-before-and-after-taxes)
 
-All data was processed by \[Our World in Data\]\]([https://ourworldindata.org](https://ourworldindata.org/)), using these sources:
+All data was processed by Our World in Data ([https://ourworldindata.org](https://ourworldindata.org/)), using these sources:
 
 -   [Luxembourg Income Study (2025)](https://www.lisdatacenter.org/our-data/lis-database/)
 
@@ -170,8 +170,8 @@ ten_best_dhi <- # post-tax
 
 ```{r}
 europe <-
-    ne_countries(scale = "medium", continent = "Europe", returnclass = "sf")
+    ne_countries(scale = "medium", continent = "Europe")
 
-tm_shape(europe) +
+tm_shape(World, crs = 3035, bb = "Europe") +
     tm_fill()
 ```
